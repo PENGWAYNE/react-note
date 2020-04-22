@@ -1,0 +1,69 @@
+<!--
+ * @Description: State & 生命周期
+ * @Author: WaynePeng
+ * @Date: 2020-04-22 22:53:39
+ * @LastEditTime: 2020-04-22 23:46:00
+ * @LastEditors: WaynePeng
+ -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
+    <script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
+    <script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      // 封装一个可复用的时钟
+      // 向 class 组件中添加局部的 state => State 与 props 类似，但是 state 是私有的，并且完全受控于当前组件
+      class Clock extends React.Component {
+        // 添加一个 class 构造函数，然后在该函数中为 this.state 赋初值
+        constructor(props) {
+          super(props)
+          this.state = {
+            date: new Date(),
+          }
+          // 关于state：
+          // 1. 直接修改state不会渲染组件，应该使用setState()
+          // 2. State 的更新可能是异步的 => 出于性能考虑，React 可能会把多个 setState() 调用合并成一个调用。因为 this.props 和 this.state 可能会异步更新，所以你不要依赖他们的值来更新下一个状态, 要解决这个问题，可以让 setState() 接收一个函数而不是一个对象
+          // 3. State 的更新会被合并 => 当你调用 setState() 的时候，React 会把你提供的对象合并到当前的 state
+        }
+        
+        // 将生命周期方法添加到 Class 中
+        // 在具有许多组件的应用程序中，当组件被销毁时释放所占用的资源是非常重要的。
+        // 当 Clock 组件第一次被渲染到 DOM 中的时候，就为其设置一个计时器。这在 React 中被称为“挂载（mount）”
+        // 同时，当 DOM 中 Clock 组件被删除的时候，应该清除计时器。这在 React 中被称为“卸载（unmount）”
+
+        tick() {
+          // 使用 this.setState() 来时刻更新组件 state
+          this.setState({
+            date: new Date(),
+          })
+        }
+        // 方法会在组件已经被渲染到 DOM 中后运行
+        componentDidMount() {
+          this.timerID = setInterval(() => this.tick(), 1000)
+        }
+        componentWillUnmount() {
+          clearInterval(this.timerID)
+        }
+        render() {
+          return <h1>{this.state.date.toLocaleString()}</h1>
+        }
+      }
+
+      // 通过以下方式将 props 传递到父类的构造函数中：
+      // constructor(props) {
+      //   super(props)
+      // }
+      // Class 组件应该始终使用 props 参数来调用父类的构造函数
+
+      ReactDOM.render(<Clock />, document.getElementById('root'))
+    </script>
+  </body>
+</html>
