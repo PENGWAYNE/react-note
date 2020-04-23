@@ -1,0 +1,75 @@
+<!--
+ * @Description: 条件渲染
+ * @Author: WaynePeng
+ * @Date: 2020-04-23 11:48:45
+ * @LastEditTime: 2020-04-23 14:09:40
+ * @LastEditors: WaynePeng
+ -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
+    <script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
+    <script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      // React 中的条件渲染和 JavaScript 中的一样，使用 JavaScript 运算符 if 或者条件运算符去创建元素来表现当前的状态，然后让 React 根据它们来更新 UI
+      // 在组件的 render 方法中返回 null 并不会影响组件的生命周期
+      class UserGreeting extends React.Component {
+        constructor(props) {
+          super(props)
+        }
+        render() {
+          return <h1>Welcome back!</h1>
+        }
+      }
+
+      class GuestGreeting extends React.Component {
+        constructor(props) {
+          super(props)
+        }
+        render() {
+          return <h1>Please sign up.</h1>
+        }
+      }
+
+      function Show(props) {
+        if (!props.b_show) {
+          return null
+        } else {
+          return <h1>显示</h1>
+        }
+      }
+
+      // 再创建一个 Greeting 组件，它会根据用户是否登录来决定显示上面的哪一个组件
+      class Greeting extends React.Component {
+        constructor(props) {
+          super(props)
+        }
+        render() {
+          if (this.props.b_login) {
+            return <UserGreeting />
+          } else {
+            return (
+              <div>
+                <GuestGreeting />
+                <Show b_show={false} />
+              </div>
+            )
+          }
+        }
+      }
+
+      ReactDOM.render(
+        <Greeting b_login={false} />,
+        document.getElementById('root')
+      )
+    </script>
+  </body>
+</html>

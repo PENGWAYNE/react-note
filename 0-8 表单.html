@@ -1,0 +1,76 @@
+<!--
+ * @Description: 表单
+ * @Author: WaynePeng
+ * @Date: 2020-04-23 15:33:20
+ * @LastEditTime: 2020-04-23 16:53:38
+ * @LastEditors: WaynePeng
+ -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
+    <script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
+    <script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      // 使 React 的 state 成为“唯一数据源”。渲染表单的 React 组件还控制着用户输入过程中表单发生的操作。被 React 以这种方式控制取值的表单输入元素就叫做“受控组件”
+      class NameForm extends React.Component {
+        constructor(props) {
+          super(props)
+          this.state = {
+            value: '' // 默认值
+          }
+          this.$onHandleChange = this.$onHandleChange.bind(this)
+          this.$onHandleSubmit = this.$onHandleSubmit.bind(this)
+        }
+
+        // 输入值默认值
+        $onHandleChange(event) {
+          this.setState({
+            value: event.target.value
+          })
+        }
+
+        // 提交表单
+        $onHandleSubmit(event) {
+          alert('你提交的名字是：' + this.state.value)
+          event.preventDefault() // 阻止默认事件
+        }
+
+        render() {
+          return (
+            <div>
+              <form onSubmit={this.$onHandleSubmit}>
+                <label>
+                  名字:
+                  <input
+                    type="text"
+                    // 由于在表单元素上设置了 value 属性，因此显示的值将始终为 this.state.value，这使得 React 的 state 成为唯一数据源。由于 handlechange 在每次按键时都会执行并更新 React 的 state，因此显示的值将随着用户输入而更新
+
+                    // 当需要处理多个 input 元素时，我们可以给每个元素添加 name 属性，并让处理函数根据 event.target.name 的值选择要执行的操作
+                    value={this.state.value}
+                    onChange={this.$onHandleChange}
+                  />
+                </label>
+                <input type="submit" value="提交" />
+              </form>
+              <div>在受控组件上指定 value 的 prop 会阻止用户更改输入。如果你指定了 value，但输入仍可编辑，则可能是你意外地将value 设置为 undefined 或 null</div>
+              不可修改
+              <input value="hi" />
+              可修改
+              <input value={null} />
+            </div>
+          )
+        }
+      }
+
+      ReactDOM.render(<NameForm />, document.getElementById('root'))
+    </script>
+  </body>
+</html>

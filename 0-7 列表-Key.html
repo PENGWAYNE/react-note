@@ -1,0 +1,33 @@
+<!--
+ * @Description: 列表 & Key
+ * @Author: WaynePeng
+ * @Date: 2020-04-23 14:52:42
+ * @LastEditTime: 2020-04-23 15:04:36
+ * @LastEditors: WaynePeng
+ -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
+    <script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
+    <script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const numbers = [1, 2, 3, 4, 5]
+      // 渲染多个组件
+      // key 帮助 React 识别哪些元素改变了，比如被添加或删除。因此你应当给数组中的每一个元素赋予一个确定的标识
+      const listItems = numbers.map((element, index) => <li key={index}>{element}</li>)
+      
+      ReactDOM.render(
+        <ul>{listItems}</ul>,
+        document.getElementById('root')
+      )
+    </script>
+  </body>
+</html>
