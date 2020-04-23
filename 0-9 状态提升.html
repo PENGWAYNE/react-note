@@ -2,7 +2,7 @@
  * @Description: 状态提升
  * @Author: WaynePeng
  * @Date: 2020-04-23 17:00:27
- * @LastEditTime: 2020-04-23 17:00:52
+ * @LastEditTime: 2020-04-23 23:50:45
  * @LastEditors: WaynePeng
  -->
 <!DOCTYPE html>
@@ -16,6 +16,69 @@
     <script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
   </head>
   <body>
-    
+    <div id="root"></div>
+
+    <script type="text/babel">
+      // 通常，多个组件需要反映相同的变化数据，这时我们建议将共享状态提升到最近的共同父组件中去
+      // 判断温度是否可以将水煮沸
+      function BoilingVerdict(props) {
+        if (props.celsius >= 100) {
+          return <p>The water would boil.</p>
+        } else {
+          return <p>The water would not boil.</p>
+        }
+      }
+
+      // 华氏/摄氏
+      const scaleNames = {
+        c: 'Celsius',
+        f: 'Fahrenheit',
+      }
+
+      // 输入温度
+      class TemperatureInput extends React.Component {
+        constructor(props) {
+          super(props)
+          this.state = {
+            temperature: '', // 输入的温度
+          }
+          this.$onChangeCelsius = this.$onChangeCelsius.bind(this)
+        }
+        // 温度改变
+        $onChangeCelsius(event) {
+          this.setState({
+            temperature: event.target.value,
+          })
+        }
+        render() {
+          return (
+            <div>
+              <div className="celsius">
+                请输入{scaleNames[this.props.scale]}温度：
+              </div>
+              <input
+                type="number"
+                value={this.state.temperature}
+                onChange={this.$onChangeCelsius}
+              />
+              <BoilingVerdict celsius={parseFloat(this.state.temperature)} />
+            </div>
+          )
+        }
+      }
+
+      class Calculator extends React.Component {
+        render() {
+          return (
+            <div>
+              <TemperatureInput scale="c" />
+              <TemperatureInput scale="f" />
+            </div>
+          )
+        }
+      }
+
+      ReactDOM.render(<Calculator />, document.getElementById('root'))
+    </script>
   </body>
 </html>
