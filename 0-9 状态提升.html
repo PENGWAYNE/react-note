@@ -2,7 +2,7 @@
  * @Description: 状态提升
  * @Author: WaynePeng
  * @Date: 2020-04-23 17:00:27
- * @LastEditTime: 2020-04-23 23:50:45
+ * @LastEditTime: 2020-04-24 16:41:36
  * @LastEditors: WaynePeng
  -->
 <!DOCTYPE html>
@@ -32,23 +32,18 @@
       // 华氏/摄氏
       const scaleNames = {
         c: 'Celsius',
-        f: 'Fahrenheit',
+        f: 'Fahrenheit'
       }
 
       // 输入温度
       class TemperatureInput extends React.Component {
         constructor(props) {
           super(props)
-          this.state = {
-            temperature: '', // 输入的温度
-          }
           this.$onChangeCelsius = this.$onChangeCelsius.bind(this)
         }
         // 温度改变
         $onChangeCelsius(event) {
-          this.setState({
-            temperature: event.target.value,
-          })
+          this.props.$onTemperatureChange(event.target.value)
         }
         render() {
           return (
@@ -58,21 +53,71 @@
               </div>
               <input
                 type="number"
-                value={this.state.temperature}
+                value={this.props.temperature}
                 onChange={this.$onChangeCelsius}
               />
-              <BoilingVerdict celsius={parseFloat(this.state.temperature)} />
             </div>
           )
         }
       }
 
       class Calculator extends React.Component {
+        constructor(props) {
+          super(props)
+          this.$onHandleCelsiusChange = this.$onHandleCelsiusChange.bind(this)
+          this.$onHandleFahrenheitChange = this.$onHandleFahrenheitChange.bind(
+            this
+          )
+          this.state = { temperature: '', scale: 'c' }
+        }
+
+        $onHandleCelsiusChange(temperature) {
+          this.setState({ scale: 'c', temperature })
+        }
+
+        $onHandleFahrenheitChange(temperature) {
+          this.setState({ scale: 'f', temperature })
+        }
+
         render() {
+          // 摄氏华氏转换
+          function toCelsius(fahrenheit) {
+            return ((fahrenheit - 32) * 5) / 9
+          }
+
+          function toFahrenheit(celsius) {
+            return (celsius * 9) / 5 + 32
+          }
+          // 格式化输入的字符串
+          function tryConvert(temperature, convert) {
+            const input = parseFloat(temperature)
+            if (Number.isNaN(input)) {
+              return ''
+            }
+            const output = convert(input)
+            const rounded = Math.round(output * 1000) / 1000
+            return rounded.toString()
+          }
+          const scale = this.state.scale
+          const temperature = this.state.temperature
+          const celsius =
+            scale === 'f' ? tryConvert(temperature, toCelsius) : temperature
+          const fahrenheit =
+            scale === 'c' ? tryConvert(temperature, toFahrenheit) : temperature
+
           return (
             <div>
-              <TemperatureInput scale="c" />
-              <TemperatureInput scale="f" />
+              <TemperatureInput
+                scale="c"
+                temperature={celsius}
+                $onTemperatureChange={this.$onHandleCelsiusChange}
+              />
+              <TemperatureInput
+                scale="f"
+                temperature={fahrenheit}
+                $onTemperatureChange={this.$onHandleFahrenheitChange}
+              />
+              <BoilingVerdict celsius={parseFloat(celsius)} />
             </div>
           )
         }
